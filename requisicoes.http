@@ -1,0 +1,92 @@
+### 1. Metadados do Serviço
+GET http://127.0.0.1:8000/diagnostico/modelo
+User-Agent: Tester-Audit-Agent
+Accept: application/json
+
+### 2. Predição - Perfil A (contrato mensal, fibra, cliente recente: alto risco de churn)
+POST http://127.0.0.1:8000/predict
+User-Agent: Tester-Audit-Agent
+Content-Type: application/json
+
+{
+  "gender": "Female",
+  "SeniorCitizen": "No",
+  "Partner": "No",
+  "Dependents": "No",
+  "tenure": 2,
+  "PhoneService": "Yes",
+  "InternetService": "Fiber optic",
+  "OnlineSecurity": "No",
+  "TechSupport": "No",
+  "Contract": "Month-to-month",
+  "PaperlessBilling": "Yes",
+  "PaymentMethod": "Electronic check",
+  "MonthlyCharges": 95.7,
+  "TotalCharges": 191.4
+}
+
+### 3. Predição - Perfil B (contrato de dois anos, cliente antigo: baixo risco de churn)
+POST http://127.0.0.1:8000/predict
+User-Agent: Tester-Audit-Agent
+Content-Type: application/json
+
+{
+  "gender": "Male",
+  "SeniorCitizen": "No",
+  "Partner": "Yes",
+  "Dependents": "Yes",
+  "tenure": 68,
+  "PhoneService": "Yes",
+  "InternetService": "DSL",
+  "OnlineSecurity": "Yes",
+  "TechSupport": "Yes",
+  "Contract": "Two year",
+  "PaperlessBilling": "No",
+  "PaymentMethod": "Bank transfer (automatic)",
+  "MonthlyCharges": 64.5,
+  "TotalCharges": 4386.0
+}
+
+### 4. Predição Inválida - texto em campo numérico (esperado: HTTP 422)
+POST http://127.0.0.1:8000/predict
+User-Agent: Tester-Audit-Agent
+Content-Type: application/json
+
+{
+  "gender": "Female",
+  "SeniorCitizen": "No",
+  "Partner": "Yes",
+  "Dependents": "No",
+  "tenure": "invalido",
+  "PhoneService": "Yes",
+  "InternetService": "DSL",
+  "OnlineSecurity": "No",
+  "TechSupport": "No",
+  "Contract": "One year",
+  "PaperlessBilling": "Yes",
+  "PaymentMethod": "Mailed check",
+  "MonthlyCharges": 50.0,
+  "TotalCharges": 600.0
+}
+
+### 5. Predição Inválida - valor fora dos limites e categoria inexistente (esperado: HTTP 422)
+POST http://127.0.0.1:8000/predict
+User-Agent: Tester-Audit-Agent
+Content-Type: application/json
+
+{
+  "gender": "Female",
+  "SeniorCitizen": "No",
+  "Partner": "Yes",
+  "Dependents": "No",
+  "tenure": -5,
+  "PhoneService": "Yes",
+  "InternetService": "Satelite",
+  "OnlineSecurity": "No",
+  "TechSupport": "No",
+  "Contract": "One year",
+  "PaperlessBilling": "Yes",
+  "PaymentMethod": "Mailed check",
+  "MonthlyCharges": 9999.0,
+  "TotalCharges": 600.0
+}
